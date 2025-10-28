@@ -10,15 +10,15 @@ export default function Tasklist() {
         {/* Checkbox */}
         <input
           type="checkbox"
-          className="h-4 w-4 cursor-pointer accent-amber-400 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-2 focus:ring-amber-400 transition-all"
+          className="h-5 w-5 cursor-pointer accent-emerald-600 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-2 focus:ring-amber-400 transition-all"
         />
 
       
-        <div className="flex flex-col grow gap-1">
-          <p className="text-[16px] font-semibold text-gray-800 dark:text-gray-100">
+        <div className="flex flex-col grow ">
+          <p className="text-[17px] font-semibold text-gray-800 dark:text-gray-100">
             Hello
           </p>
-          <p className="text-[13px] text-gray-500 dark:text-gray-400">
+          <p className="text-[14px] text-gray-500 dark:text-gray-400">
             30/10/25
           </p>
         </div>

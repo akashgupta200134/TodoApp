@@ -1,11 +1,16 @@
 import Tasklist from "./Tasklist";
+import { DatePickerIcon } from "./ui/DatePicker";
+
 
 
 export default function Middlebar(){
     return (    
    
-    <div className="text-5xl font-bold">
-     Today
+    <div>
+    <div className="flex flex-row items-center justify-start gap-6">
+    <DatePickerIcon/>
+    </div>
+   
      <p className="font-normal mt-4 text-[18px]">
       Remaning task : 0
      </p>
