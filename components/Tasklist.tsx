@@ -14,7 +14,7 @@ export default function Tasklist() {
         />
 
       
-        <div className="flex flex-col flex-grow">
+        <div className="flex flex-col grow gap-1">
           <p className="text-[16px] font-semibold text-gray-800 dark:text-gray-100">
             Hello
           </p>
