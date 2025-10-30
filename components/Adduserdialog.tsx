@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   Dialog,
   DialogContent,
@@ -19,21 +18,21 @@ export default function AddUserDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[400px] mt-16">
         <DialogHeader>
           <DialogTitle>Edit Task</DialogTitle>
           <DialogDescription>Update task details below.</DialogDescription>
         </DialogHeader>
 
-        <form className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="task" className="text-right">
+        <form className="grid gap-4 py-3">
+          <div className="grid grid-cols-2 items-center gap-4">
+            {/* <label htmlFor="task" className="text-right ">
               Task
-            </label>
+            </label> */}
             <input
               id="task"
-              className="col-span-3 border rounded px-2 py-1"
-              placeholder="Edit task name"
+              className="col-span-3 border rounded px-2 py-2"
+              placeholder="Edit the task "
             />
           </div>
         </form>
