@@ -6,63 +6,68 @@ import { useState } from "react";
 import { User } from "@deemlol/next-icons";
 
 export default function Profile() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
+const { data: session, status } = useSession();
+const router = useRouter();
+const [open, setOpen] = useState(false);
 
-  console.log("Session user:", session?.user);
+const handleClick = () => {
+if (status === "loading") return;
 
-  function handleClick() {
-    if (status === "loading") return;
-    if (!session) {
-      router.push("/api/auth/signin"); // not logged in → go to login
-    } else {
-      setOpen((prev) => !prev); // toggle dropdown
-    }
-  }
+if (!session) {
+  router.push("/signin"); // redirect to your custom signin page
+} else {
+  setOpen((prev) => !prev);
+}
 
-  return (
-    <div className="relative ml-10">
-      {/* Profile Icon / User Image */}
-      <div
-        onClick={handleClick}
-        className="rounded-full overflow-hidden border-2 cursor-pointer flex items-center justify-center w-12 h-12"
-      >
-        {session?.user?.image ? (
-          <img
-            src={session.user.image}
-            alt="User Avatar"
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <User size={28} className="text-red-600" />
-        )}
+
+};
+
+const handleLogout = async () => {
+await signOut({ callbackUrl: "/" }); // redirect after logout
+setOpen(false);
+};
+
+return (
+<div className="relative ml-10">
+{/* Profile Icon */}
+<div onClick={handleClick} className="rounded-full overflow-hidden border-2 cursor-pointer flex items-center justify-center w-12 h-12 border-gray-300 dark:border-neutral-700" >
+{session?.user?.image ? (
+<img src={session.user.image} alt="User Avatar" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+) : (
+<User size={28} className="text-gray-600 dark:text-gray-300" />
+)}
+</div>
+
+  {/* Dropdown Menu */}
+  {open && session && (
+    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-neutral-900 shadow-lg rounded-xl border border-gray-200 dark:border-neutral-700 z-50 p-4">
+      <div className="flex items-center gap-3 mb-3">
+        <img
+          src={session.user?.image || "/default-avatar.png"}
+          alt="User"
+          referrerPolicy="no-referrer"
+          className="w-10 h-10 rounded-full"
+        />
+        <div>
+          <p className="font-semibold text-gray-800 dark:text-gray-100">
+            {session.user?.name || "No Name"}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {session.user?.email}
+          </p>
+        </div>
       </div>
 
-      {/* Dropdown Menu */}
-      {open && session && (
-        <div className="absolute -left-52  mt-2  w-69 bg-white dark:bg-neutral-900  grid grid-cols-1 shadow-md rounded-xl border z-50 p-4 -px-10">
-          <div className="flex items-center gap-3 mb-3">
-            <img
-              src={session.user?.image || "/default-avatar.png"}
-              alt="User"
-              referrerPolicy="no-referrer"
-              className="w-10 h-10 rounded-full"
-            />
-            <div>
-              <p className="font-semibold">{session.user?.name}</p>
-              <p className="text-sm text-gray-500">{session.user?.email}</p>
-            </div>
-          </div>
-          <button
-            onClick={() => signOut()}
-            className="w-full bg-red-500 text-white py-1 rounded-md hover:bg-red-600"
-          >
-            Logout
-          </button>
-        </div>
-      )}
+      <button
+        onClick={handleLogout}
+        className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition"
+      >
+        Logout
+      </button>
     </div>
-  );
+  )}
+</div>
+
+
+);
 }
