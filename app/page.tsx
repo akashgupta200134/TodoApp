@@ -1,13 +1,20 @@
 import Rightbar from "@/components/rightbar";
 import Menubar from "./menubar/page";
 import Middlebar from "@/components/middlebar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 
+export default async function Home() {
 
-export default function Home() {
+  const session = await getServerSession(authOptions);
+  console.log("🟢 Logged-in user ID:", session?.user?.id);
+  // return <div>Check your terminal logs</div>;
+
   return (
     <> 
     <div className="flex flex-row items-start justify-between gap-10 "> 
+
     <Menubar/>
     <Middlebar/>
     <Rightbar/>
