@@ -1,36 +1,80 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+
+import { useEffect, useState, useTransition } from "react";
 import Tasklist from "@/components/Tasklist";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getTodos, toggleTodo, deleteTodo } from "@/app/actions";
 
-export default async function TodosList() {
-  const session = await getServerSession(authOptions);
+type Todo = {
+  id: number;
+  title: string;
+  completed: boolean;
+  createdAt: Date;
+  taskDate: Date;
+  userId: string;
+};
 
-  // ✅ Always check if session exists before using it
-  if (!session || !session.user) {
-    return (
-      <p className="text-gray-500 text-center mt-6">
-        Please log in to view your todos.
-      </p>
+export default function TodosList({ selectedDate }: { selectedDate?: Date | null }) {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [isPending, startTransition] = useTransition();
+
+  // 🧠 Fetch todos
+  const fetchTodos = async (date?: Date | null) => {
+    if (!date) return;
+
+    // ✅ Convert selectedDate to YYYY-MM-DD format (UTC-safe)
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const formatted = `${year}-${month}-${day}`;
+
+    const result = await getTodos(formatted);
+    if (result?.todos && Array.isArray(result.todos)) {
+      setTodos(result.todos);
+    } else {
+      setTodos([]);
+    }
+  };
+
+  // 🔄 Load todos when component mounts or date changes
+  useEffect(() => {
+    startTransition(() => {
+      fetchTodos(selectedDate);
+    });
+  }, [selectedDate]);
+
+  // ✅ Optimistic toggle
+  const handleToggle = async (id: number) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
     );
-  }
+    await toggleTodo(id);
+    fetchTodos(selectedDate);
+  };
 
-  const todos = await prisma.todo.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
-
-  if (todos.length === 0) {
-    return (
-      <p className="text-gray-500 text-center mt-6">No todos yet. Add one!</p>
-    );
-  }
+  // ✅ Optimistic delete
+  const handleDelete = async (id: number) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    await deleteTodo(id);
+    fetchTodos(selectedDate);
+  };
 
   return (
-    <div className="flex flex-col items-center gap-4 mt-8">
-      {todos.map((todo) => (
-        <Tasklist key={todo.id} todo={todo} />
-      ))}
+    <div>
+      {todos.length === 0 ? (
+        <p className="text-gray-500 mt-4 text-center">No tasks available for this date.</p>
+      ) : (
+        todos.map((todo) => (
+          <Tasklist
+            key={todo.id}
+            todo={todo}
+            onToggle={handleToggle}
+            onDelete={handleDelete}
+            onUpdated={() => fetchTodos(selectedDate)}
+          />
+        ))
+      )}
     </div>
   );
 }

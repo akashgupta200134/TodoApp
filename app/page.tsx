@@ -8,13 +8,13 @@ import { authOptions } from "@/lib/auth";
 export default async function Home() {
 
   const session = await getServerSession(authOptions);
-  console.log("🟢 Logged-in user ID:", session?.user?.id);
-  // return <div>Check your terminal logs</div>;
+  
+  console.log("Logged-in user ID:", session?.user?.id);
+  
 
   return (
     <> 
-    <div className="flex flex-row items-start justify-between gap-10 "> 
-
+    <div className="flex flex-row items-start justify-between gap-10 mb-10 mt-4"> 
     <Menubar/>
     <Middlebar/>
     <Rightbar/>

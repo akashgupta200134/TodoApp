@@ -1,20 +1,37 @@
-import { DatePickerIcon } from "./ui/DatePicker";
-import getTodos from "@/components/todos/TodoList"; // ✅ import getTodos
+"use client";
 
-export default async function Middlebar() {
-  const todos = await getTodos(); // ✅ Fetch todos here
+import { useState, useEffect } from "react";
+import TodosList from "@/components/todos/TodoList";
+import { DatePickerIcon } from "@/components/ui/DatePicker";
+
+export default function Middlebar() {
+  // Use a Date object, not string
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
+
+  // ✅ On mount, set default date to *today in IST*
+  useEffect(() => {
+    const todayIST = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    setSelectedDate(todayIST);
+  }, []);
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-start gap-6">
-        <DatePickerIcon />
+      {/* Date Picker */}
+      <div className="flex items-center gap-4 mb-4">
+        <DatePickerIcon
+          onDateSelect={(dateString: string) => {
+            const [year, month, day] = dateString.split("-").map(Number);
+            const selected = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+            setSelectedDate(selected);
+          }}
+        />
       </div>
 
-      <p className="font-normal mt-4 text-[18px]">Remaining task:</p>
-
-      <div className="mt-2">
-        {todos}
-      </div>
+      {/* Todos List filtered by selectedDate */}
+      {selectedDate && <TodosList selectedDate={selectedDate} />}
     </div>
   );
 }

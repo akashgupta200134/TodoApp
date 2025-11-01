@@ -13,7 +13,7 @@ export default function AddTodo() {
       <form action={formAction}>
         <div className="mt-10">
           <p className="font-semibold ml-4 text-lg text-gray-700 dark:text-gray-200 mb-2">
-            Add Todo:
+            Add Todo :
           </p>
 
           <div className="flex flex-row gap-2 ml-2.5">

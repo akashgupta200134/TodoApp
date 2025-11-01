@@ -1,6 +1,6 @@
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/Navbar";
+
 import Provider from "./provider";
 
 export default function RootLayout({
@@ -18,7 +18,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
             {children}
           </ThemeProvider>
         </Provider>

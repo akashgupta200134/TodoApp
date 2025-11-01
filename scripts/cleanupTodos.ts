@@ -16,7 +16,7 @@ async function cleanupTodos() {
   const invalidTodos = todos.filter(todo => !validUserIds.has(todo.userId));
 
   if (invalidTodos.length === 0) {
-    console.log("✅ All todos have valid user references!");
+    console.log("All todos have valid user references!");
   } else {
     console.log(`⚠️ Found ${invalidTodos.length} invalid todos:`);
     invalidTodos.forEach(t => console.log(`  - id: ${t.id}, userId: ${t.userId}`));

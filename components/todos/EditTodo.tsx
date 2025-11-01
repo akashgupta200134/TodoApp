@@ -3,8 +3,17 @@
 import { useState, useTransition } from "react";
 import { updateTodo } from "@/app/actions";
 
-
-export default function EditTodoDialog({ open, onOpenChange, todo } : any) {
+export default function EditTodoDialog({
+  open,
+  onOpenChange,
+  todo,
+  onUpdated, // ✅ add this
+}: {
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+  todo: any;
+  onUpdated?: () => void; // ✅ optional type
+}) {
   const [title, setTitle] = useState(todo.title);
   const [taskDate, setTaskDate] = useState(
     new Date(todo.taskDate).toISOString().split("T")[0]
@@ -14,8 +23,13 @@ export default function EditTodoDialog({ open, onOpenChange, todo } : any) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     startTransition(async () => {
-      await updateTodo(todo.id, title, new Date(taskDate));
+      // ✅ Fix timezone shift when saving
+      const utcDate = new Date(`${taskDate}T00:00:00.000Z`);
+      await updateTodo(todo.id, title, new Date(`${taskDate}T00:00:00.000Z`).toISOString());
+
+
       onOpenChange(false);
+      if (onUpdated) onUpdated(); // ✅ refresh todos in parent
     });
   };
 
