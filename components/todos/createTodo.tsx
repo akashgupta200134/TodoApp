@@ -5,9 +5,8 @@ import Button from "../AddButton";
 
 export default function AddTodo() {
   const [state, formAction, isPending] = useActionState(createTodo, {
-    success: false,
     error: "",
-  });
+  } as const);
   return (
     <div>
       <form action={formAction}>

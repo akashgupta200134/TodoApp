@@ -21,7 +21,10 @@ function parseLocalDate(dateStr: string): Date {
 /* ----------------------------------------------------------
  ✅ CREATE Todo
 ---------------------------------------------------------- */
-export async function createTodo(prevState: any, formData: FormData) {
+export async function createTodo(
+  prevState: { error?: string } | undefined,
+  formData: FormData
+): Promise<{ error?: string }> {
   const title = formData.get("Title") as string;
   const taskDateStr = formData.get("Date") as string;
 
@@ -44,7 +47,7 @@ export async function createTodo(prevState: any, formData: FormData) {
     });
 
     revalidatePath("/");
-    return { success: true };
+    return { error: undefined };
   } catch (err) {
     console.error("❌ Error creating todo:", err);
     return { error: "Failed to create todo." };

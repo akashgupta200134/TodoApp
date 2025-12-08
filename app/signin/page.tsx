@@ -3,9 +3,9 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
-export default function SignInPage() {
+function SignInContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -73,12 +73,20 @@ export default function SignInPage() {
         </button>
 
         <p className="text-sm mt-2">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link href="/signup" className="text-blue-600 hover:underline">
             Sign up
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 }
