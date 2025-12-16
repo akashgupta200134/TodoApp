@@ -17,28 +17,48 @@ export default function Tasklist({
   todo,
   onToggle,
   onDelete,
-  onUpdated, // 👈 add this prop
+  onUpdated,
 }: {
   todo: Todo;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
-  onUpdated?: () => void; // 👈 optional
+  onUpdated?: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex justify-center mt-8">
-      <div className="flex flex-row items-center gap-4 w-[380px] md:w-[490px] bg-white dark:bg-neutral-900 shadow-md border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 transition-all duration-300">
+    <div className="flex items-center   justify-center md:justify-start mt-4 md:mt-8 px-2 sm:px-0">
+      <div
+        className="
+          flex items-center gap-3 md:gap-4  
+          sm:w-full w-full  md:w-[90%]
+
+          bg-white dark:bg-neutral-900
+          border border-neutral-200 dark:border-neutral-800
+          shadow-md rounded-xl
+
+          p-3 md:p-4
+          transition-all duration-300
+        "
+      >
+        {/* Checkbox */}
         <input
           type="checkbox"
           checked={todo.completed}
           onChange={() => onToggle(todo.id)}
-          className="h-5 w-5 cursor-pointer accent-emerald-600 border-gray-300 dark:border-neutral-700 rounded-md focus:ring-2 focus:ring-amber-400 transition-all"
+          className="
+            h-5 w-5 shrink-0
+            cursor-pointer
+            accent-emerald-600
+            rounded-md
+            focus:ring-2 focus:ring-amber-400
+          "
         />
 
-        <div className="flex flex-col grow">
+        {/* Content */}
+        <div className="flex flex-col grow min-w-0">
           <p
-            className={`text-[17px] font-semibold transition-all duration-200 ${
+            className={`text-[15px] md:text-[17px] font-semibold truncate ${
               todo.completed
                 ? "line-through text-gray-400"
                 : "text-gray-800 dark:text-gray-100"
@@ -46,7 +66,8 @@ export default function Tasklist({
           >
             {todo.title}
           </p>
-          <p className="text-[14px] text-gray-500 dark:text-gray-400">
+
+          <p className="text-[13px] md:text-[14px] text-gray-500 dark:text-gray-400">
             {new Date(todo.taskDate).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "short",
@@ -55,27 +76,28 @@ export default function Tasklist({
           </p>
         </div>
 
-        <div className="flex flex-row gap-4">
+        {/* Actions */}
+        <div className="flex items-center gap-3">
           <Edit3
             onClick={() => setOpen(true)}
-            size={22}
-            className="cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-500 transition-colors duration-200"
+            size={20}
+            className="cursor-pointer text-gray-700 dark:text-gray-200 hover:text-amber-500 transition-colors"
           />
           <Trash2
             onClick={() => onDelete(todo.id)}
-            size={22}
-            className="cursor-pointer text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+            size={20}
+            className="cursor-pointer text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors"
           />
         </div>
       </div>
 
       {/* Dialog */}
-      {open && todo && (
+      {open && (
         <EditTodoDialog
           open={open}
           onOpenChange={setOpen}
           todo={todo}
-          onUpdated={onUpdated} // ✅ call parent’s re-fetch function
+          onUpdated={onUpdated}
         />
       )}
     </div>

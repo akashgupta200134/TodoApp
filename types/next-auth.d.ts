@@ -27,3 +27,7 @@ declare module "next-auth/jwt" {
     image?: string | null;
   }
 }
+
+export type TodoActionState =
+  | { success: true }
+  | { error: string };

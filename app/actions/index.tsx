@@ -4,24 +4,28 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { authOptions } from "@/lib/auth";
+import { TodoActionState } from "@/types/next-auth";
 
-// ✅ Utility — Get Current User ID
+// Utility — Get Current User ID
 async function getCurrentUserId() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Unauthorized");
   return session.user.id;
 }
 
-// 🧠 Helper: Convert YYYY-MM-DD → local date (no timezone shift)
+//  Convert YYYY-MM-DD → local date (no timezone shift)
 function parseLocalDate(dateStr: string): Date {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day, 0, 0, 0);
 }
 
-/* ----------------------------------------------------------
- ✅ CREATE Todo
----------------------------------------------------------- */
-export async function createTodo(prevState: any, formData: FormData) {
+
+ //CREATE Todo
+
+export async function createTodo(
+  prevState: TodoActionState,
+  formData: FormData
+): Promise<TodoActionState> {
   const title = formData.get("Title") as string;
   const taskDateStr = formData.get("Date") as string;
 
@@ -46,14 +50,14 @@ export async function createTodo(prevState: any, formData: FormData) {
     revalidatePath("/");
     return { success: true };
   } catch (err) {
-    console.error("❌ Error creating todo:", err);
+    console.error("Error creating todo:", err);
     return { error: "Failed to create todo." };
   }
 }
 
-/* ----------------------------------------------------------
- ✅ UPDATE Todo
----------------------------------------------------------- */
+
+// UPDATE Todo
+
 export async function updateTodo(id: number, title: string, taskDateStr: string) {
   const userId = await getCurrentUserId();
 
@@ -72,9 +76,9 @@ export async function updateTodo(id: number, title: string, taskDateStr: string)
   return { success: true };
 }
 
-/* ----------------------------------------------------------
- ✅ TOGGLE Completion
----------------------------------------------------------- */
+
+ //TOGGLE Completion
+
 export async function toggleTodo(id: number) {
   const userId = await getCurrentUserId();
 
@@ -90,9 +94,9 @@ export async function toggleTodo(id: number) {
   revalidatePath("/");
 }
 
-/* ----------------------------------------------------------
- ✅ DELETE Todo
----------------------------------------------------------- */
+
+ // DELETE Todo
+
 export async function deleteTodo(id: number) {
   const userId = await getCurrentUserId();
 
@@ -105,9 +109,9 @@ export async function deleteTodo(id: number) {
   revalidatePath("/");
 }
 
-/* ----------------------------------------------------------
- ✅ GET Todos (All or Filtered by Date)
----------------------------------------------------------- */
+
+ // GET Todos (All or Filtered by Date)
+
 export async function getTodos(date?: string) {
   const userId = await getCurrentUserId();
 
@@ -115,7 +119,7 @@ export async function getTodos(date?: string) {
     const where: any = { userId };
 
     if (date) {
-      // ✅ Local start/end of day
+      // Local start/end of day
       const [year, month, day] = date.split("-").map(Number);
       const localStart = new Date(year, month - 1, day, 0, 0, 0);
       const localEnd = new Date(year, month - 1, day, 23, 59, 59);
