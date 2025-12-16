@@ -13,11 +13,12 @@ function SignInContent() {
   const searchParams = useSearchParams();
 
   // Capture error from NextAuth redirect (e.g., CredentialsSignin)
-  useEffect(() => {
-    const err = searchParams.get("error");
-    if (err === "CredentialsSignin") setError("Invalid email or password");
-    else if (err) setError(err);
-  }, [searchParams]);
+useEffect(() => {
+  if (!searchParams) return;
+  const err = searchParams.get("error");
+  if (err === "CredentialsSignin") setError("Invalid email or password");
+  else if (err) setError(err);
+}, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

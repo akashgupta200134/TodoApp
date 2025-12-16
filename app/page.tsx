@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <> 
-    <div className="flex flex-row items-start justify-between gap-10 mb-10 mt-4"> 
+    <div className="md:flex md:overflow-hidden overflow-x-hidden md:flex-row flex flex-col md:items-start md:justify-between md:gap-10 mb-5 mt-4"> 
     <Menubar/>
     <Middlebar/>
     <Rightbar/>

@@ -63,7 +63,7 @@ export default function TodosList({ selectedDate }: { selectedDate?: Date | null
   return (
     <div>
       {todos.length === 0 ? (
-        <p className="text-gray-500 mt-4 text-center">No tasks available for this date.</p>
+        <p className="text-gray-500 md:mt-10  mt-10  text-center">No tasks available for this date.</p>
       ) : (
         todos.map((todo) => (
           <Tasklist
