@@ -7,26 +7,36 @@ async function cleanupTodos() {
 
   // 1️⃣ Get all valid user IDs
   const users = await prisma.user.findMany({ select: { id: true } });
-  const validUserIds = new Set(users.map(u => u.id));
+     const validUserIds = new Set(users.map((u: { id: string }) => u.id));
 
   // 2️⃣ Get all todos
   const todos = await prisma.todo.findMany();
 
   // 3️⃣ Find todos with invalid or missing userId
-  const invalidTodos = todos.filter(todo => !validUserIds.has(todo.userId));
+const invalidTodos = todos.filter((todo: { userId: string }) => !validUserIds.has(todo.userId));
+
 
   if (invalidTodos.length === 0) {
     console.log("All todos have valid user references!");
   } else {
     console.log(`⚠️ Found ${invalidTodos.length} invalid todos:`);
-    invalidTodos.forEach(t => console.log(`  - id: ${t.id}, userId: ${t.userId}`));
+
+type TodoType = Awaited<ReturnType<typeof prisma.todo.findMany>>[number];
+
+invalidTodos.forEach((t: TodoType) =>
+  console.log(`  - id: ${t.id}, userId: ${t.userId}`)
+);
+
 
     // 4️⃣ Option A: Delete them
-    const deleteIds = invalidTodos.map(t => t.id);
+
+
+const deleteIds = invalidTodos.map((t: TodoType) => t.id);
+
     await prisma.todo.deleteMany({
       where: { id: { in: deleteIds } },
     });
-    console.log(`🗑️ Deleted ${deleteIds.length} invalid todos.`);
+    console.log(` Deleted ${deleteIds.length} invalid todos.`);
 
     // 4️⃣ Option B (Alternative): Reassign to a default user
     // Uncomment this if you want to reassign instead of delete:
@@ -47,6 +57,6 @@ async function cleanupTodos() {
 }
 
 cleanupTodos().catch(err => {
-  console.error("❌ Error during cleanup:", err);
+  console.error(" Error during cleanup:", err);
   prisma.$disconnect();
 });
