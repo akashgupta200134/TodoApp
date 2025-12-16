@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 async function cleanupTodos() {
   console.log("🧹 Starting todo cleanup...");
 
-  // 1️⃣ Get all valid user IDs
+  //  Get all valid user IDs
   const users = await prisma.user.findMany({ select: { id: true } });
      const validUserIds = new Set(users.map((u: { id: string }) => u.id));
 
-  // 2️⃣ Get all todos
+  //  Get all todos
   const todos = await prisma.todo.findMany();
 
-  // 3️⃣ Find todos with invalid or missing userId
+  //  Find todos with invalid or missing userId
 const invalidTodos = todos.filter((todo: { userId: string }) => !validUserIds.has(todo.userId));
 
 
@@ -28,7 +28,7 @@ invalidTodos.forEach((t: TodoType) =>
 );
 
 
-    // 4️⃣ Option A: Delete them
+    //Option A: Delete them
 
 
 const deleteIds = invalidTodos.map((t: TodoType) => t.id);
@@ -37,19 +37,6 @@ const deleteIds = invalidTodos.map((t: TodoType) => t.id);
       where: { id: { in: deleteIds } },
     });
     console.log(` Deleted ${deleteIds.length} invalid todos.`);
-
-    // 4️⃣ Option B (Alternative): Reassign to a default user
-    // Uncomment this if you want to reassign instead of delete:
-    /*
-    const DEFAULT_USER_ID = "your_valid_user_id_here";
-    for (const todo of invalidTodos) {
-      await prisma.todo.update({
-        where: { id: todo.id },
-        data: { userId: DEFAULT_USER_ID },
-      });
-    }
-    console.log(`🔁 Reassigned ${invalidTodos.length} todos to user ${DEFAULT_USER_ID}`);
-    */
   }
 
   await prisma.$disconnect();
@@ -60,3 +47,5 @@ cleanupTodos().catch(err => {
   console.error(" Error during cleanup:", err);
   prisma.$disconnect();
 });
+
+
